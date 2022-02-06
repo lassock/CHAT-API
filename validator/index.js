@@ -8,8 +8,7 @@ exports.messageValidator = (req, res, next) => {
     const errors = req.validationErrors()
     // if errors show the frist one as they happen.
     if (errors) {
-        const firstError = errors.map((error) => error.msg)[0]
-        return res.status(400).json({ error: firstError })
+        return res.status(400).json({ error: errors })
     }
     // Proceed to next middleware.
     next()
@@ -24,8 +23,7 @@ exports.contactValidator = (req, res, next) => {
     const errors = req.validationErrors()
     // if errors show the frist one as they happen.
     if (errors) {
-        const firstError = errors.map((error) => error.msg)[0]
-        return res.status(400).json({ error: firstError })
+        return res.status(400).json({ error: errors })
     }
     // Proceed to next middleware.
     next()
@@ -39,8 +37,7 @@ exports.conversationValidator = (req, res, next) => {
     const errors = req.validationErrors()
     // if errors show the frist one as they happen.
     if (errors) {
-        const firstError = errors.map((error) => error.msg)[0]
-        return res.status(400).json({ error: firstError })
+        return res.status(400).json({ error: errors })
     }
     // Proceed to next middleware.
     next()

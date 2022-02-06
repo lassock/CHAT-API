@@ -6,6 +6,7 @@ const bodyParser = require('body-parser')
 const messagesRouter = require('./routes/message')
 const contactsRouter = require('./routes/contact')
 const conversationsRouter = require('./routes/conversation')
+const mongoose = require('mongoose')
 
 dotenv.config()
 const app = express()
@@ -24,6 +25,13 @@ app.use('/views', express.static('views'))
 
 app.get('/', function (req, res) {
     res.sendFile(__dirname + '/views/home.html', (error) => console.log('Error provided : ', error))
+})
+
+mongoose.connect(process.env.MONGO_URI).then(() => {
+    console.log('Connected to the database...')
+})
+mongoose.connection.on('error', (err) => {
+    console.log('Error when connect to database : ', err)
 })
 
 const port = process.env.PORT || '4000'
