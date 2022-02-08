@@ -7,6 +7,9 @@ const messagesRouter = require('./routes/message')
 const contactsRouter = require('./routes/contact')
 const conversationsRouter = require('./routes/conversation')
 const mongoose = require('mongoose')
+const socketIniter = require('./socket.io')
+const validator = require('./validator')
+const cors = require('cors')
 
 dotenv.config()
 const app = express()
@@ -17,7 +20,16 @@ app.use(
         limit: '50mb',
     })
 )
+app.use(
+    bodyParser.urlencoded({
+        limit: '50mb',
+        parameterLimit: 100000,
+        extended: true,
+    })
+)
+app.use(cors())
 app.use(expressValidator())
+app.use(validator.config)
 app.use('/message', messagesRouter)
 app.use('/contact', contactsRouter)
 app.use('/conversation', conversationsRouter)
@@ -36,6 +48,14 @@ mongoose.connection.on('error', (err) => {
 
 const port = process.env.PORT || '4000'
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
     console.log('chat-api is listen on ' + port)
 })
+// Socket io, initilisation.
+let io = require('socket.io')(server, {
+    cors: {
+        origin: '*',
+        method: ['GET', 'POST'],
+    },
+})
+socketIniter.main_initer(io)

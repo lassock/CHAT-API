@@ -1,18 +1,23 @@
 const mongoose = require('mongoose')
 
-const conversationSchema = mongoose.Schema({
-    initer: {
-        type: String,
-        required: true,
+const conversationSchema = mongoose.Schema(
+    {
+        initer: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Contact',
+        },
+        concern: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Contact',
+        },
+        message: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Message',
+            },
+        ],
     },
-    concern: {
-        type: String,
-        required: true,
-    },
-    last_message_id: {
-        type: String,
-        required: true,
-    },
-})
+    { timestamps: true }
+)
 
 module.exports = mongoose.model('Conversation', conversationSchema)
