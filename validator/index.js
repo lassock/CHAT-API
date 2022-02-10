@@ -1,3 +1,6 @@
+const jwt = require('jsonwebtoken')
+const Contact = require('../models/contact')
+
 exports.config = (req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*')
     res.setHeader(
@@ -9,6 +12,28 @@ exports.config = (req, res, next) => {
         return res.status(200).json({})
     }
     next()
+}
+
+exports.auth = async (req, res, next) => {
+    try {
+        const token = req.header('Authorization').replace('Bearer ', '')
+        if (!token) {
+            throw new Error()
+        } else {
+            const decoded = await jwt.verify(token, 'thisismytokencourse')
+            const contact = await Contact.findOne({ _id: decoded._id, 'tokens.token': token })
+
+            if (!contact) {
+                throw new Error()
+            } else {
+                req.contact = contact
+                req.token = token
+                next()
+            }
+        }
+    } catch (e) {
+        res.status(404).send({ message: 'Contact dont get authorization to do this.' })
+    }
 }
 
 exports.messageValidator = (req, res, next) => {
