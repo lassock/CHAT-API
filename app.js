@@ -34,6 +34,7 @@ app.use('/message', messagesRouter)
 app.use('/contact', contactsRouter)
 app.use('/conversation', conversationsRouter)
 app.use('/views', express.static('views'))
+app.use('/public', express.static('public'))
 
 app.get('/', function (req, res) {
     res.sendFile(__dirname + '/views/home.html', (error) => console.log('Error provided : ', error))
@@ -51,6 +52,7 @@ const port = process.env.PORT || '4000'
 const server = app.listen(port, () => {
     console.log('chat-api is listen on ' + port)
 })
+
 // Socket io, initilisation.
 let io = require('socket.io')(server, {
     cors: {

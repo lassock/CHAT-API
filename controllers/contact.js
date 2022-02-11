@@ -1,4 +1,5 @@
 const Contact = require('../models/contact')
+const sharp = require('sharp')
 
 /**
  * Functiont to get all contacts.
@@ -18,7 +19,7 @@ exports.login = async (req, res) => {
     try {
         const contact = await Contact.findContactCredential(req.query.username, req.query.password)
         const token = await contact.generateContactToken()
-        res.status(200).send({contact, token})
+        res.status(200).send({ contact, token })
     } catch (e) {
         res.status(400).send()
     }
@@ -35,7 +36,7 @@ exports.login = async (req, res) => {
  */
 exports.logout = async (req, res) => {
     try {
-        req.contact.tokens = req.contact.tokens.filter(item => item.token !== req.token)
+        req.contact.tokens = req.contact.tokens.filter((item) => item.token !== req.token)
         req.contact.save()
         res.status(200).send({})
     } catch (e) {
@@ -59,7 +60,7 @@ exports.createContact = async (req, res) => {
     try {
         await contact.save()
         const token = await contact.generateContactToken()
-        res.status(200).json({contact, token})
+        res.status(200).json({ contact, token })
     } catch (e) {
         res.status(400).json({
             from: 'On save',
@@ -93,4 +94,12 @@ exports.updateContact = (req, res) => {
         if (err) return res.status(400).json({ error: error })
         res.status(200).json(result)
     })
+}
+
+exports.uplaodProfile = async (req, res) => {
+    const contact = req.contact
+    const buffer = await sharp(req.file.buffer).resize({ height: 250, width: 250 }).png().toBuffer()
+    contact.avatar = buffer
+    await contact.save()
+    res.send({ contact })
 }

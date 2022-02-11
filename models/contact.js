@@ -21,6 +21,9 @@ const contactSchema = mongoose.Schema(
             type: String,
             required: true,
         },
+        avatar: {
+            type: Buffer,
+        },
         tokens: [
             {
                 token: {
@@ -39,6 +42,7 @@ contactSchema.methods.toJSON = function () {
 
     delete contactObject.password
     delete contactObject.tokens
+    delete contactObject.avatar
 
     return contactObject
 }
